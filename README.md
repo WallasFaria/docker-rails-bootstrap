@@ -25,8 +25,14 @@ export GID=$(id -g)
 You don't need ruby installed in your local machine to create new applications. Create your next one using:
 
 ```bash
-git clone https://github.com/WallasFaria/docker-rails-bootstrap myapp
-cd myapp
+git clone https://github.com/WallasFaria/docker-rails-bootstrap app-name
+cd app-name
+
+# to rails only api run the line below:
+git checkout origin/only-api
+```
+
+```bash
 ./bootstrap.sh
 docker-compose up
 ```

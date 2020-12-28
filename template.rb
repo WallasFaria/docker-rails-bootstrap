@@ -68,7 +68,7 @@ after_bundle do
   copy_file __dir__ + '/template/sidekiq.yml', 'config/sidekiq.yml'
   copy_file __dir__ + '/template/rubocop.yml', '.rubocop.yml'
   copy_file __dir__ + '/template/fasterer.yml', '.fasterer.yml'
-  copy_file __dir__ + '/template/config.reek', 'config.reek'
+  copy_file __dir__ + '/template/.reek.yml', '.reek.yml'
 
   run 'overcommit --install'
 
