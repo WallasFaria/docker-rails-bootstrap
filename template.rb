@@ -7,7 +7,8 @@ gem_group :development do
   gem 'active_record_doctor'
   gem 'bundler-audit'
   gem 'overcommit'
-  gem 'rubocop', require: false
+  gem 'rubocop-rails', require: false
+  gem 'rubocop-rspec', require: false
   gem 'rubycritic', require: false
   gem 'fasterer', require: false
   gem 'reek'
@@ -52,10 +53,10 @@ after_bundle do
       config.i18n.default_locale = :'pt-BR'
       config.time_zone = 'UTC'
       config.active_job.queue_adapter = :sidekiq
-      config.generators do |g|
-        g.assets false
-        g.helper false
-        g.jbuilder false
+      config.generators do |generator|
+        generator.assets false
+        generator.helper false
+        generator.jbuilder false
       end
     RUBY
   end

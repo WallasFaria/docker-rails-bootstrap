@@ -1,6 +1,6 @@
 CommitMsg:
   MessageFormat:
-    enabled: false
+    enabled: true
     description: 'Check commit message matches expected pattern'
     pattern: '^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([a-zA-Z ]+([\\\/,][a-zA-Z ]+){0,}?\))?: [\w ]+$'
     expected_pattern_message: 'type(scope?): subject # types: build, ci, chore, docs, feat, fix, perf, refactor, revert, style, test'
@@ -13,6 +13,9 @@ CommitMsg:
     enabled: true
 
   TextWidth:
+    enabled: false
+
+  CapitalizedSubject:
     enabled: false
 
 PreCommit:
@@ -57,4 +60,4 @@ PreCommit:
 
 PrePush:
   RSpec:
-    enable: true
+    enabled: true
