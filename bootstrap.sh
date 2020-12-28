@@ -3,6 +3,8 @@
 echo "Creating an environment file"      \
   && cp .env.sample .env                 \
   && mkdir -p db/postgres                \
+  && echo "Remove .git"                  \
+  && rm -rf .git                         \
   && echo "Building images"              \
   && docker-compose build                \
   && echo "Installing rails"             \
