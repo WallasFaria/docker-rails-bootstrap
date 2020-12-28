@@ -9,7 +9,7 @@ echo "Creating an environment file"      \
   && docker-compose run --rm web bundle  \
   && echo "Creating your application"    \
   && docker-compose run --rm web bundle exec rails new . -m template.rb \
-  && rm -rf bootstrap.sh template.rb     \
+  && rm -rf bootstrap.sh template.rb template \
   && echo "Your application is ready =)" \
   && echo "Run 'docker-compose up'"
 

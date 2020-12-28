@@ -1,81 +1,92 @@
-
+uncomment_lines 'Gemfile', /gem 'redis'/
 gem 'sidekiq'
+gem 'dotenv'
+
+gem_group :development do
+  gem 'annotate'
+  gem 'active_record_doctor'
+  gem 'bundler-audit'
+  gem 'overcommit'
+  gem 'rubocop', require: false
+  gem 'rubycritic', require: false
+  gem 'fasterer', require: false
+  gem 'reek'
+  gem 'rails_best_practices'
+  gem 'brakeman', require: false
+end
+
+gem_group :development, :test do
+  gem 'pry-rails'
+  gem 'rspec-rails'
+end
+
+gem_group :test do
+  gem 'shoulda-matchers'
+  gem 'faker'
+  gem 'factory_bot_rails'
+  gem 'database_cleaner'
+  gem 'cucumber-rails', require: false
+end
 
 after_bundle do
   # uncomment_lines 'config/puma.rb', /WEB_CONCURRENCY/
   # uncomment_lines 'config/puma.rb', /preload_app/
+
+  generate('rspec:install')
+  generate('cucumber:install')
+  generate('annotate:install')
 
   inject_into_file '.gitignore' do
     <<~EOF
       /.env
       /.cache
       /.yarn
+      /.bundle
+      /.vscode
       /db/postgres/backup.dump
     EOF
   end
 
-  environment do <<~RUBY
-    config.i18n.default_locale = :en
-    config.time_zone = 'UTC'
-
-    config.active_job.queue_adapter = :sidekiq
-
-    config.generators do |g|
-      g.assets false
-      g.helper false
-      g.jbuilder false
-    end
-  RUBY
+  environment do
+    <<~RUBY
+      config.i18n.default_locale = :'pt-BR'
+      config.time_zone = 'UTC'
+      config.active_job.queue_adapter = :sidekiq
+      config.generators do |g|
+        g.assets false
+        g.helper false
+        g.jbuilder false
+      end
+    RUBY
   end
 
-  file 'config/sidekiq.yml', <<~EOF
-    ---
-    :verbose: false
-    :concurrency: 5
-    :queues:
-      - [critical, 2]
-      - default
-      - mailers
-      - low
-    
-    production:
-      :concurrency: 5
-    
-    staging:
-      :concurrency: 5
-  EOF
+  run 'mkdir -p db/postgres'
 
-  file 'config/initializers/action_mailer.rb', <<~EOF
-    ActionMailer::Base.default_url_options = {
-      host: ENV['EMAIL_URL_HOST'],
-      port: ENV['EMAIL_URL_PORT']
-    }
-    if Rails.env.development?
-      ActionMailer::Base.delivery_method = :smtp
-      ActionMailer::Base.smtp_settings = { address: 'mail', port: 1025 }
+  copy_file __dir__ + '/template/init-db.sh', 'db/postgres/init-db.sh'
+  copy_file __dir__ + '/template/action_mailer.rb', 'config/initializers/action_mailer.rb'
+  copy_file __dir__ + '/template/overcommit.yml', '.overcommit.yml'
+  copy_file __dir__ + '/template/sidekiq.yml', 'config/sidekiq.yml'
+  copy_file __dir__ + '/template/rubocop.yml', '.rubocop.yml'
+  copy_file __dir__ + '/template/fasterer.yml', '.fasterer.yml'
+  copy_file __dir__ + '/template/config.reek', 'config.reek'
 
-    elsif Rails.env.production?
-      ActionMailer::Base.delivery_method = :smtp
-      ActionMailer::Base.perform_deliveries = true
-      ActionMailer::Base.smtp_settings = {
-        :port           => ENV['SMTP_PORT'],
-        :address        => ENV['SMTP_SERVER'],
-        :user_name      => ENV['SMTP_USERNAME'],
-        :password       => ENV['SMTP_PASSWORD'],
-        :domain         => ENV['EMAIL_URL_HOST'],
-        :authentication => :plain
-      }
-    end
-  EOF
+  run 'overcommit --install'
 
-  file 'db/postgres/init-db.sh',  <<~EOF
-    #!/bin/sh
+  inject_into_file 'spec/rails_helper.rb', after: 'RSpec.configure do |config|' do
+    <<~RUBY
+        config.include FactoryBot::Syntax::Methods
 
-    BACKUP_FILE="/docker-entrypoint-initdb.d/backup.dump"
-    if [ -f "$BACKUP_FILE" ]; then
-      pg_restore --verbose --clean --no-acl --no-owner -U "$POSTGRES_USER" -d "$POSTGRES_DB" "$BACKUP_FILE"
-    fi
-    exit
-  EOF
+        config.before(:suite) do
+          DatabaseCleaner.strategy = :transaction
+          DatabaseCleaner.clean_with(:truncation)
+        end
+
+        Shoulda::Matchers.configure do |config|
+          config.integrate do |with|
+            with.test_framework :rspec
+            with.library :rails
+          end
+        end
+    RUBY
+  end
 end
-

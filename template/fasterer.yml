@@ -1,0 +1,8 @@
+speedups:
+  each_with_index_vs_while: false
+
+exclude_paths:
+  - spec/**/*.rb
+  - vendor/**/*.rb
+  - config/**/*.rb
+  - db/schema.rb
