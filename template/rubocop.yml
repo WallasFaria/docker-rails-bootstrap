@@ -1,13 +1,63 @@
-AllCops:
-  Exclude:
-    - 'spec/**/*'
-    - vendor/**/*.rb
-    - config/**/*.rb
-    - db/schema.rb
-  TargetRubyVersion: 2.4
+CommitMsg:
+  MessageFormat:
+    enabled: true
+    description: 'Check commit message matches expected pattern'
+    pattern: '^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([a-zA-Z ]+([\\\/,][a-zA-Z ]+){0,}?\))?: [\w ]+$'
+    expected_pattern_message: 'type(scope?): subject # types: build, ci, chore, docs, feat, fix, perf, refactor, revert, style, test'
+    sample_message: 'chore: run tests on travis ci'
 
-Metrics/LineLength:
-  Max: 120
+  EmptyMessage:
+    enabled: false
 
-FrozenStringLiteralComment:
-  Enabled: false
+  TrailingPeriod:
+    enabled: true
+
+  TextWidth:
+    enabled: false
+
+  CapitalizedSubject:
+    enabled: false
+
+PreCommit:
+  ALL:
+    on_warn: fail
+
+  AuthorEmail:
+    enabled: true
+
+  AuthorName:
+    enabled: true
+
+  MergeConflicts:
+    enabled: true
+
+  YamlSyntax:
+    enabled: true
+
+  BundleCheck:
+    enabled: true
+
+  RuboCop:
+    enabled: true
+
+  Fasterer:
+    enabled: true
+
+  BundleAudit:
+    enabled: true
+
+  Reek:
+    enabled: true
+
+  RailsBestPractices:
+    enabled: true
+
+  Brakeman:
+    enabled: true
+
+  RailsSchemaUpToDate:
+    enabled: true
+
+PrePush:
+  RSpec:
+    enabled: true
