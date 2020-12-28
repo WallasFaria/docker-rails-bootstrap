@@ -1,4 +1,5 @@
 --force
 --no-deps
+--api
 --skip-test
 --database=postgresql

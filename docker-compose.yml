@@ -7,8 +7,6 @@ x-app: &app
     args:
       RUBY_VERSION: '2.7.2'
       PG_MAJOR_VERSION: '12'
-      NODE_MAJOR_VERSION: '12'
-      YARN_VERSION: '1.22.4'
   user: $UID:$GID
   env_file: .env
   tmpfs:
@@ -42,17 +40,6 @@ services:
   job:
     <<: *rails
     command: bundle exec sidekiq -C config/sidekiq.yml
-
-  webpacker:
-    <<: *app
-    command: ./bin/webpack-dev-server
-    ports:
-      - 3035
-    volumes:
-      - .:/app
-      - bundle:/usr/local/bundle
-    environment:
-      WEBPACKER_DEV_SERVER_HOST: 0.0.0.0
 
   db:
     image: postgres:12

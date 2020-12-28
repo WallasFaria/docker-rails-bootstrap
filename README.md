@@ -2,7 +2,7 @@
 
 An opinionated docker-compose setup for Rails apps. 
 
-Currently includes ruby 2.7, postgres 12, node 12, webpacker, sidekiq, [mailhog][] and [pgweb][].
+Currently includes ruby 2.7, postgres 12, sidekiq, [mailhog][] and [pgweb][].
 
 > This setup was created for development. 
 
@@ -25,7 +25,7 @@ export GID=$(id -g)
 You don't need ruby installed in your local machine to create new applications. Create your next one using:
 
 ```bash
-git clone https://github.com/jweslley/docker-rails-bootstrap myapp
+git clone https://github.com/WallasFaria/docker-rails-bootstrap myapp
 cd myapp
 ./bootstrap.sh
 docker-compose up
@@ -76,7 +76,6 @@ alias dc='docker-compose'
 alias b='docker-compose run --rm web bundle'
 alias be='docker-compose run --rm web bundle exec'
 alias bundle='docker-compose run --rm web bundle'
-alias yarn='docker-compose run --rm web yarn'
 alias rails='docker-compose run --rm web bundle exec rails'
 alias webs='docker-compose run --rm web bin/setup' # web Setup
 alias webx='docker-compose run --rm web'           # web eXecute
@@ -113,13 +112,11 @@ You need to reset the database because the dump only will be loaded in fresh ins
 
 ### Customizing stack
 
-Currently this setup includes ruby 2.7, postgres 12, node 12 and yarn 1.22. However you can customize the version of any of them, to this open the file `docker-compose.yml`, locate the following lines and edit the versions you would like to use.
+Currently this setup includes ruby 2.7 and postgres 12. However you can customize the version of any of them, to this open the file `docker-compose.yml`, locate the following lines and edit the versions you would like to use.
 
 ```yaml
 RUBY_VERSION: '2.7.0'
 PG_MAJOR_VERSION: '12'
-NODE_MAJOR_VERSION: '12'
-YARN_VERSION: '1.22.4'
 ```
 
 After editing, execute `docker-compose build` to rebuild the application's images.

@@ -40,7 +40,6 @@ after_bundle do
     <<~EOF
       /.env
       /.cache
-      /.yarn
       /.bundle
       /.vscode
       /db/postgres/backup.dump
